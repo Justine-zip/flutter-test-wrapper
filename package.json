@@ -4,6 +4,7 @@
   "description": "",
   "version": "0.0.1",
   "publisher": "Justine-zip",
+  "repository": { "type": "git", "url": "https://github.com/Justine-zip/flutter-test-wrapper.git" },
   "engines": {
     "vscode": "^1.138.0"
   },
