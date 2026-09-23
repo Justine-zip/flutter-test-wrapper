@@ -2,8 +2,9 @@
   "name": "flutter-test-wrapper",
   "displayName": "Flutter Test Wrapper",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "Justine-zip",
+  "icon": "images/Flutter_test_icon.png",
   "repository": { "type": "git", "url": "https://github.com/Justine-zip/flutter-test-wrapper.git" },
   "engines": {
     "vscode": "^1.138.0"

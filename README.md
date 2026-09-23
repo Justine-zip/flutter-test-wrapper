@@ -20,33 +20,134 @@ Generate an integration test using Flutter's `integration_test` package.
 
 ## Automatic Test Structure
 
-The extension automatically mirrors your `lib/` folder structure inside `test/`.
+The extension provides multiple folder location options for generated tests.
 
-For example, if you're working on:
-
-```text
-lib/
-└── feature/
-    └── home/
-        └── home.dart
-```
-
-Run:
+When you run:
 
 ```text
 Flutter: Create Test
+```
+
+you can choose where the generated test should be created:
+
+```text
+Mirror Lib Folder
+Unit Test Folder
+Widget Test Folder
+Integration Test Folder
+```
+
+### Mirror Lib Folder
+
+Mirrors the source file's folder structure from `lib/` inside `test/`.
+
+For example:
+
+```text
+lib/
+
+└── feature/
+
+    └── home/
+
+        └── home.dart
 ```
 
 The extension creates:
 
 ```text
 test/
+
 └── feature/
+
     └── home/
+
         └── home_test.dart
 ```
 
-You don't need to manually create the test folders or filename.
+### Unit Test Folder
+
+Places the generated unit test directly inside `test/unit/`.
+
+For example:
+
+```text
+lib/feature/home/home.dart
+```
+
+generates:
+
+```text
+test/unit/home_test.dart
+```
+
+### Widget Test Folder
+
+Places the generated widget test directly inside `test/widget/`.
+
+For example:
+
+```text
+lib/feature/home/home.dart
+```
+
+generates:
+
+```text
+test/widget/home_test.dart
+```
+
+### Integration Test Folder
+
+Places the generated integration test directly inside `test/integration/`.
+
+For example:
+
+```text
+lib/feature/home/home.dart
+```
+
+generates:
+
+```text
+test/integration/home_test.dart
+```
+
+### Folder Structure Overview
+
+```text
+my_app/
+
+├── lib/
+│   ├── feature/
+│   │   └── home/
+│   │       └── home.dart
+│   └── services/
+│       └── user_service.dart
+│
+├── test/
+│   ├── feature/
+│   │   └── home/
+│   │       └── home_test.dart
+│   │
+│   ├── unit/
+│   │   └── user_service_test.dart
+│   │
+│   └── widget/
+│       └── home_test.dart
+│
+├── test/
+│   └── integration/
+│       └── home_test.dart
+│
+└── pubspec.yaml
+```
+
+The `Mirror Lib Folder` option preserves the source folder structure.
+
+The `Unit Test Folder`, `Widget Test Folder`, and `Integration Test Folder` options place the generated test directly into their respective test folders without recreating the `lib/` directory structure.
+
+You don't need to manually create the test folders or filename. The extension creates the required directories automatically.
 
 ---
 
@@ -66,7 +167,7 @@ If your current file is:
 lib/feature/home/home.dart
 ```
 
-The generated test automatically imports:
+the generated test automatically imports:
 
 ```dart
 import 'package:my_app/feature/home/home.dart';
@@ -78,6 +179,7 @@ The test type also adds the required testing package automatically.
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:my_app/feature/home/home.dart';
 ```
 
@@ -85,7 +187,9 @@ import 'package:my_app/feature/home/home.dart';
 
 ```dart
 import 'package:flutter/material.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:my_app/feature/home/home.dart';
 ```
 
@@ -93,7 +197,9 @@ import 'package:my_app/feature/home/home.dart';
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:integration_test/integration_test.dart';
+
 import 'package:my_app/feature/home/home.dart';
 ```
 
@@ -119,13 +225,27 @@ Flutter: Create Test
 
 ```text
 Unit Test
+
 Widget Test
+
 Integration Test
 ```
 
-5. Enter the test/widget name.
+5. Choose a test folder location:
 
-6. The extension creates the test in the matching `test/` directory.
+```text
+Mirror Lib Folder
+
+Unit Test Folder
+
+Widget Test Folder
+
+Integration Test Folder
+```
+
+6. Enter the test/widget name.
+
+7. The extension creates the test in the selected directory.
 
 ---
 
@@ -137,20 +257,29 @@ Source:
 lib/services/user_service.dart
 ```
 
-Generated:
+If **Mirror Lib Folder** is selected:
 
 ```text
 test/services/user_service_test.dart
+```
+
+If **Unit Test Folder** is selected:
+
+```text
+test/unit/user_service_test.dart
 ```
 
 Example:
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:my_app/services/user_service.dart';
 
 void main() {
+
   test('UserService test', () {
+
     // Arrange
 
     // Act
@@ -158,7 +287,9 @@ void main() {
     // Assert
 
     expect(true, isTrue);
+
   });
+
 }
 ```
 
@@ -172,33 +303,55 @@ Source:
 lib/feature/home/home_page.dart
 ```
 
-Generated:
+If **Mirror Lib Folder** is selected:
 
 ```text
 test/feature/home/home_page_test.dart
+```
+
+If **Widget Test Folder** is selected:
+
+```text
+test/widget/home_page_test.dart
 ```
 
 Example:
 
 ```dart
 import 'package:flutter/material.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:my_app/feature/home/home_page.dart';
 
 void main() {
+
   testWidgets(
+
     'HomePage test',
+
     (WidgetTester tester) async {
+
       await tester.pumpWidget(
-        const HomePage(),
+
+        const MaterialApp(
+          home: HomePage(),
+        ),
+
       );
 
       expect(
+
         find.byType(HomePage),
+
         findsOneWidget,
+
       );
+
     },
+
   );
+
 }
 ```
 
@@ -206,32 +359,61 @@ void main() {
 
 ## Integration Test Example
 
+If **Integration Test Folder** is selected:
+
+```text
+lib/feature/home/home_page.dart
+```
+
+generates:
+
+```text
+test/integration/home_page_test.dart
+```
+
 Example generated test:
 
 ```dart
+import 'package:flutter/material.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:integration_test/integration_test.dart';
+
 import 'package:my_app/feature/home/home_page.dart';
 
 void main() {
+
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets(
+
     'HomePage integration test',
+
     (WidgetTester tester) async {
+
       await tester.pumpWidget(
-        const HomePage(),
+
+        HomePage(),
+
       );
 
       // Perform actions
 
       // Verify results
+
       expect(
+
         find.byType(HomePage),
+
         findsOneWidget,
+
       );
+
     },
+
   );
+
 }
 ```
 
@@ -243,6 +425,7 @@ Before:
 
 ```text
 my_app/
+
 ├── lib/
 │   ├── feature/
 │   │   ├── home/
@@ -256,10 +439,11 @@ my_app/
 └── pubspec.yaml
 ```
 
-After generating tests:
+After generating tests using the different folder location options:
 
 ```text
 my_app/
+
 ├── lib/
 │   ├── feature/
 │   │   ├── home/
@@ -275,8 +459,16 @@ my_app/
 │   │   │   └── home_page_test.dart
 │   │   └── profile/
 │   │       └── profile_page_test.dart
-│   └── services/
-│       └── user_service_test.dart
+│   │
+│   ├── unit/
+│   │   └── user_service_test.dart
+│   │
+│   └── widget/
+│       └── home_page_test.dart
+│
+├── test/
+│   └── integration/
+│       └── home_page_test.dart
 │
 └── pubspec.yaml
 ```
@@ -310,6 +502,15 @@ Widget Test
 Integration Test
 ```
 
+Then choose the test folder location:
+
+```text
+Mirror Lib Folder
+Unit Test Folder
+Widget Test Folder
+Integration Test Folder
+```
+
 ---
 
 ## Roadmap
@@ -341,5 +542,5 @@ Copyright (c) 2026 Justine Butiong
 
 ```
 
-This positioning makes the extension clear: **it is a Flutter test generator/wrapper**, with **Unit / Widget / Integration** as the three test-generation modes—not a general Flutter widget-wrapping extension.
+This positioning makes the extension clear: **it is a Flutter test generator/wrapper**, with **Unit / Widget / Integration** as the three test-generation modes, while giving users control over whether the generated test **mirrors the `lib/` structure or goes directly into a dedicated test folder**.
 ```

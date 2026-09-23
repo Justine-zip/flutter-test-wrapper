@@ -46,13 +46,14 @@ const createTestCommand = vscode.commands.registerCommand(
             /^lib\//,
             ''
         );
-
-        // Remove .dart
+        
         const sourceImportPath = libRelativePath.replace(
             /\.dart$/,
             ''
         );
-
+            
+        const dartFilename = libRelativePath.split('/').pop();
+        
         const testRelativePath =
             `${sourceImportPath}_test.dart`;
 
@@ -60,7 +61,7 @@ const createTestCommand = vscode.commands.registerCommand(
             path.join(
                 workspaceRoot,
                 'test',
-                testRelativePath
+                `${dartFilename.replace(`\.dart`, '')}_test.dart`
             )
         );
 
@@ -91,6 +92,41 @@ const createTestCommand = vscode.commands.registerCommand(
         );
 
         if (!selected) {
+            return;
+        }
+
+         const testLoc = [
+            {
+                label: 'Mirror Lib Folder',
+                description: 'Create a mirror of lib folder',
+                value: 'lib'
+            },
+            {
+                label: 'Unit Test Folder',
+                description: 'Create a Dart unit test folder',
+                value: 'unit'
+            },
+            {
+                label: 'Widget Test Folder',
+                description: 'Create a Flutter widget test folder',
+                value: 'widget'
+            },
+            {
+                label: 'Integration Test Folder',
+                description: 'Create a Flutter integration test folder',
+                value: 'integration'
+            }
+        ];
+
+        const selectedTestLoc = await vscode.window.showQuickPick(
+            testLoc,
+            {
+                title: 'Flutter: Create Test Folder',
+                placeHolder: 'Select test folder location'
+            }
+        );
+
+        if (!selectedTestLoc) {
             return;
         }
 
@@ -205,7 +241,7 @@ void main() {
     (WidgetTester tester) async {
 
       await tester.pumpWidget(
-        const ${name}(),
+        ${name}(),
       );
 
       // Perform actions
@@ -221,12 +257,49 @@ void main() {
 `;
         }
 
-        const testDirectory = vscode.Uri.file(
-            path.dirname(testPath.fsPath)
-        );
+        // ============================================================
+        // DETERMINE TEST PATH
+        // ============================================================
+
+        let testBaseDirectory;
+
+        switch (selectedTestLoc.value) {
+
+            case 'lib':
+                testBaseDirectory = path.join(
+                    workspaceRoot,
+                    'test',
+                    libRelativePath.replace(dartFilename, '')
+                );
+                break;
+
+            case 'unit':
+                testBaseDirectory = path.join(
+                    workspaceRoot,
+                    'test',
+                    'unit',
+                );
+                break;
+
+            case 'widget':
+                testBaseDirectory = path.join(
+                    workspaceRoot,
+                    'test',
+                    'widget',
+                );
+                break;
+
+            case 'integration':
+                testBaseDirectory = path.join(
+                    workspaceRoot,
+                    'test',
+                    'integration',
+                );
+                break;
+        }
 
         await vscode.workspace.fs.createDirectory(
-            testDirectory
+            vscode.Uri.file(testBaseDirectory)
         );
 
         try {
@@ -248,14 +321,20 @@ void main() {
             // File doesn't exist
         }
 
+        let vsTestPath = vscode.Uri.file(
+            path.join(
+                testBaseDirectory,
+                `${dartFilename.replace(`\.dart`, '')}_test.dart`
+            ),);
+
         await vscode.workspace.fs.writeFile(
-            testPath,
+            vsTestPath,
             Buffer.from(testCode, 'utf8')
         );
 
         const document =
             await vscode.workspace.openTextDocument(
-                testPath
+                vsTestPath
             );
 
         await vscode.window.showTextDocument(
@@ -263,7 +342,7 @@ void main() {
         );
 
         vscode.window.showInformationMessage(
-            `Created test: ${testRelativePath}`
+            `Test Created ✓`
         );
     }
 );
